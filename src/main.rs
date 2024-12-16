@@ -1,8 +1,10 @@
-mod camera;
-mod setup;
+mod core;
 
 use bevy::prelude::*;
-use crate::camera::move_camera;
+use crate::core::camera;
+use crate::core::setup;
+use bevy::diagnostic::FrameTimeDiagnosticsPlugin;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 fn main() {
     App::new()
@@ -18,9 +20,9 @@ fn main() {
             }),
             ..default()
         }))
-        .add_systems(Startup, setup::setup)
-        .add_systems(Startup, camera::setup_camera)
-        .add_systems(Update,move_camera)
-        .add_systems(Startup, setup::cursor_control)
+        .add_plugins(WorldInspectorPlugin::new())
+        .add_systems(Startup, (setup::setup,camera::setup_camera))
+        .add_systems(Update,  (camera::move_camera))
+        .add_plugins(FrameTimeDiagnosticsPlugin::default())
         .run();
 }
